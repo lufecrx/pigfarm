@@ -7,6 +7,8 @@
             <form (ngSubmit)="signup()" [formGroup]="formSignup" cForm novalidate>
               <h1>Register</h1>
               <p class="text-medium-emphasis">Create your account</p>
+
+
               <c-row class="mb-1">
                 <label [sm]="4" cCol cLabel="col" for="email">Email</label>
                 <c-col *ngIf="formSignup.controls['email'] as ctrl" [sm]="8">
@@ -75,7 +77,7 @@
               </c-row>
               <c-col xs="6">
                 <button type="submit" cButton class="px-4 mt-4" color="primary">
-                  Login
+                  Register
                 </button>
               </c-col>
             </form>

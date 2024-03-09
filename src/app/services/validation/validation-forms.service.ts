@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,11 @@ export class ValidationFormsService {
     nonEmpty: '^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$',
     usernameMin: 6,
     passwordMin: 4,
-    passwordPattern: '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}'
+    passwordPattern: '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}',
+    datePattern: '/^\d{4}-\d{2}-\d{2}$/',
+    statusOptions: ['Alive', 'Dead', 'Sold'],
+    genderOptions: ['Male', 'Female'],
+    identifierPattern: '^[0-9]+$',
   };
 
   formErrors = {
@@ -22,6 +27,13 @@ export class ValidationFormsService {
     password: '',
     confirmPassword: '',
     birthday: '',
+    identifier: '',
+    father_id: '',
+    mother_id: '',
+    date_birth: '',
+    date_exit: '',
+    status: '',
+    gender: '',
     accept: false
   };
 
@@ -56,7 +68,46 @@ export class ValidationFormsService {
       },
       accept: {
         requiredTrue: 'You have to accept our Terms and Conditions'
-      }
+      },
+      identifier: {
+        required: 'Identifier is required',
+        pattern: 'Identifier must contain only numbers'
+      },
+      father_id: {
+        required: 'Father ID is required',
+        pattern: 'Father ID must contain only numbers'
+      },
+      mother_id: {
+        required: 'Mother ID is required',
+        pattern: 'Mother ID must contain only numbers'
+      },
+      date_birth: {
+        required: 'Date of birth is required',
+        pattern: 'Invalid date format. Please use dd/mm/yyyy format'
+      },
+      date_exit: {
+        required: 'Date of exit is required',
+        pattern: 'Invalid date format. Please use dd/mm/yyyy format'
+      },
+      status: {
+        required: 'Status is required',
+        inOptions: `Status must be one of the following: ${this.formRules.statusOptions.join(', ')}`
+      },
+      gender: {
+        required: 'Gender is required',
+        inOptions: `Gender must be one of the following: ${this.formRules.genderOptions.join(', ')}`
+      },
     };
   }
+}
+
+
+export function inOptionsValidator(options: string[]): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (options.indexOf(value) === -1) {
+      return { inOptions: true };
+    }
+    return null;
+  };
 }

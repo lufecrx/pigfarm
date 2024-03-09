@@ -4,7 +4,7 @@ import { ValidationFormsService } from 'src/app/services/validation/validation-f
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { UserLogin } from 'src/app/model/userLogin';
+import { UserLogin } from 'src/app/model/user/user.interface';
 
 @Component({
   selector: 'app-login',

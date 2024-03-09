@@ -31,11 +31,16 @@ const routes: Routes = [
         path: 'pages',
         loadChildren: () =>
           import('./views/pages/pages.module').then((m) => m.PagesModule),
-
+      },
+      {
+        path: 'registration',
+        loadChildren: () =>
+          import('./views/registration/registration.module').then((m) => m.RegistrationModule),
       },
     ],
     canActivate: [authGuard]
   },
+
   {
     path: '404',
     component: Page404Component,

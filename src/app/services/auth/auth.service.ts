@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { UserLogin } from 'src/app/model/userLogin';
+import { UserLogin } from 'src/app/model/user/user.interface';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

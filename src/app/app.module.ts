@@ -37,9 +37,7 @@ import {
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { AngularFireModule } from '@angular/fire/compat';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getDatabase, provideDatabase } from '@angular/fire/database';
-import { HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -76,13 +74,10 @@ const APP_CONTAINERS = [
     ListGroupModule,
     CardModule,
     NgScrollbarModule,
-    HttpClientModule,
     FormModule,
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase())
   ],
   providers: [
     {
