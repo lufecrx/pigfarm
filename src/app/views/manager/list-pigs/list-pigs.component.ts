@@ -115,6 +115,12 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  weightControlMode(pig: IPig): void {
+    this.router.navigate(['/manager/weight-control'], {
+      queryParams: { pigRef: pig.key },
+    });
+  }
+
   toggleDeleteMode(): void {
     this.modalDelete = !this.modalDelete;
   }

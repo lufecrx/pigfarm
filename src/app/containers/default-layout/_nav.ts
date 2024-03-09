@@ -11,12 +11,7 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-notes' },
   },
   {
-    name: 'Weight Control',
-    url: '/weight-control',
-    iconComponent: { name: 'cil-speedometer' },
-  },
-  {
-    name: 'Registration',
+    name: 'Register',
     url: '/registration',
     iconComponent: { name: 'cil-puzzle' },
     children: [

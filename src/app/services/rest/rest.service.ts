@@ -4,8 +4,8 @@ import {
   AngularFireDatabase,
   AngularFireList,
 } from '@angular/fire/compat/database';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, firstValueFrom, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -59,19 +59,20 @@ export class RestService {
     }
   }
 
-// Retorna um item específico pelo seu ID
-getItem(key: string): Observable<any> {
-  return this.afAuth.authState.pipe(
-    switchMap((user) => {
-      if (user) {
-        return this.db.object(`${this.basePath}/${user.uid}/${key}`).valueChanges();
-      } else {
-        return new Observable<any>();
-      }
-    })
-  );
-}
-
+  // Retorna um item específico pelo seu ID
+  getItem(key: string): Observable<any> {
+    return this.afAuth.authState.pipe(
+      switchMap((user) => {
+        if (user) {
+          return this.db
+            .object(`${this.basePath}/${user.uid}/${key}`)
+            .valueChanges();
+        } else {
+          return new Observable<any>();
+        }
+      })
+    );
+  }
 
   // Adiciona um novo item
   addItem(item: any): void {
@@ -163,5 +164,34 @@ getItem(key: string): Observable<any> {
     } else {
       console.error('Referência de itens não está definida.');
     }
+  }
+
+  getWeightHistory(pigRef: string): Observable<any> {
+    if (this.itemsRef) {
+      return this.afAuth.authState.pipe(
+        take(1),
+        switchMap(user => {
+          if (user) {
+            return this.db.list<any>(`${this.basePath}/${user.uid}/${pigRef}/weightHistory`).valueChanges();
+          } else {
+            return of(null);
+          }
+        })
+      );
+    }
+    return new Observable<any[]>();
+  }
+
+  updateWeightHistory(pigRef: string, updatedWeightHistory: any): Promise<void> {
+    return firstValueFrom(this.afAuth.authState.pipe(
+      take(1),
+      switchMap(user => {
+        if (user) {
+          return this.db.object(`${this.basePath}/${user.uid}/${pigRef}/weightHistory`).set(updatedWeightHistory);
+        } else {
+          return Promise.resolve(); // Retorne uma promessa vazia se o usuário não estiver autenticado
+        }
+      })
+    ));
   }
 }

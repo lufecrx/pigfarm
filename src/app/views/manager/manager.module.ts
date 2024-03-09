@@ -22,13 +22,16 @@ import { IconModule } from '@coreui/icons-angular';
 import { ManagerRoutingModule } from './manager-routing.module';
 import { ListPigsComponent } from './list-pigs/list-pigs.component';
 import { EditPigComponent } from './edit-pig/edit-pig.component';
+import { WeightControlComponent } from './weight-control/weight-control.component';
 
 import { CalculateAgePipe } from '../../services/pipes/calculate-age.pipe';
+
 
 @NgModule({
   declarations: [
     ListPigsComponent,
     EditPigComponent,
+    WeightControlComponent,
     CalculateAgePipe,
   ],
   imports: [

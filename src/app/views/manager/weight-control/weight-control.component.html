@@ -1,0 +1,94 @@
+<c-row class="g-3">
+  <c-col [sm]="12" [md]="6" [lg]="4">
+    <label for="dateFilter">Filter by Date:</label>
+    <input class="form-control" type="date" id="dateFilter" [(ngModel)]="dateFilter"
+      (input)="applyFilters()">
+  </c-col>
+  <c-col [sm]="12" [md]="6" [lg]="4">
+    <label for="weightFilter">Filter by Weight:</label>
+    <input class="form-control" type="text" id="weightFilter" [(ngModel)]="weightFilter" (input)="applyFilters()">
+  </c-col>
+</c-row>
+
+<table cTable>
+  <thead cTableColor="light">
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Weight</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let wh of weightHistory">
+      <td>{{ wh.date }}</td>
+      <td>{{ wh.weight }}</td>
+      <td>
+        <c-dropdown variant="btn-group">
+          <button cButton cDropdownToggle color="secondary" size="sm">
+            <svg cIcon name="cil-settings"></svg>
+          </button>
+          <ul cDropdownMenu>
+            <li><button cDropdownItem (click)="editWeight(wh)">Edit</button></li>
+          </ul>
+        </c-dropdown>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<c-modal id="addWeightModal" [visible]="modalVisible" (visibleChange)="handleModalChange($event)">
+  <form cForm [formGroup]="formEditWeight">
+    <c-modal-body>
+      <c-row class="mb-1">
+        <label [sm]="4" cCol cLabel="col" for="date">Weighing Date</label>
+        <c-col *ngIf="formEditWeight.controls['date'] as ctrl" [sm]="8">
+          <input [valid]="
+                ctrl.touched && ctrl.valid
+                  ? true
+                  : (modalSubmitted || ctrl.touched) && ctrl.invalid
+                  ? false
+                  : undefined
+              " autocomplete="off" cFormControl formControlName="date" id="date" placeholder="Weighing Date" required
+            type="date" />
+          <c-form-feedback *ngIf="modalSubmitted || ctrl.invalid" [valid]="!(modalSubmitted || ctrl.invalid)">
+            <ng-container *ngIf="ctrl.errors as errors">
+              <div *ngIf="errors['required']">Weighing date is required</div>
+              <div *ngIf="errors['pattern']">
+                {{ formErrors['date'].pattern }}
+              </div>
+            </ng-container>
+          </c-form-feedback>
+        </c-col>
+      </c-row>
+
+      <c-row class="mb-1">
+        <label [sm]="4" cCol cLabel="col" for="weight">Weight</label>
+        <c-col *ngIf="formEditWeight.controls['weight'] as ctrl" [sm]="8">
+          <input [valid]="
+                ctrl.touched && ctrl.valid
+                  ? true
+                  : (modalSubmitted || ctrl.touched) && ctrl.invalid
+                  ? false
+                  : undefined
+              " autocomplete="off" cFormControl formControlName="weight" id="weight" placeholder="weight" required
+            type="text" />
+          <c-form-feedback *ngIf="modalSubmitted || ctrl.invalid" [valid]="!(modalSubmitted || ctrl.invalid)">
+            <ng-container *ngIf="ctrl.errors as errors">
+              <div *ngIf="errors['required']">Weight is required</div>
+              <div *ngIf="errors['pattern']">
+                {{ formErrors['weight'].pattern }}
+              </div>
+            </ng-container>
+          </c-form-feedback>
+        </c-col>
+      </c-row>
+    </c-modal-body>
+
+    <c-modal-footer>
+      <button (click)="cancelEdit()" cButton color="secondary">
+        Cancel
+      </button>
+      <button cButton color="primary" (click)="confirmEdit()">Confirm</button>
+    </c-modal-footer>
+  </form>
+</c-modal>

@@ -73,8 +73,6 @@ export class DashboardComponent implements OnInit {
       return 0;
     })
 
-
-
     // Extrair as datas e os pesos do histórico
     const dates = combinedDatesAndWeights.map((entry) => entry.date);
     const weights = combinedDatesAndWeights.map((entry) => entry.weight);
