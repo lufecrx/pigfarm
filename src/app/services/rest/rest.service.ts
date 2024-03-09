@@ -5,7 +5,7 @@ import {
   AngularFireList,
 } from '@angular/fire/compat/database';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +16,9 @@ export class RestService {
 
   constructor(
     private db: AngularFireDatabase,
-    private afAuth: AngularFireAuth,
+    private afAuth: AngularFireAuth
   ) {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.authState.subscribe((user) => {
       if (user) {
         // O usuário está autenticado
         this.itemsRef = db.list(`${this.basePath}/${user.uid}`);
@@ -34,8 +34,8 @@ export class RestService {
       return this.itemsRef
         .snapshotChanges()
         .pipe(
-          map(changes =>
-            changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+          map((changes) =>
+            changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
           )
         );
     } else {
@@ -47,19 +47,31 @@ export class RestService {
   // Retornar itens paginados
   getItemsPaginated(page: number, pageSize: number): Observable<any[]> {
     if (this.itemsRef) {
-      return this.itemsRef
-        .snapshotChanges()
-        .pipe(
-          map(changes =>
-            changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-          ),
-          map(items => items.slice((page - 1) * pageSize, page * pageSize))
-        );
+      return this.itemsRef.snapshotChanges().pipe(
+        map((changes) =>
+          changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+        ),
+        map((items) => items.slice((page - 1) * pageSize, page * pageSize))
+      );
     } else {
       // Retorna um observable vazio
       return new Observable<any[]>();
     }
   }
+
+// Retorna um item específico pelo seu ID
+getItem(key: string): Observable<any> {
+  return this.afAuth.authState.pipe(
+    switchMap((user) => {
+      if (user) {
+        return this.db.object(`${this.basePath}/${user.uid}/${key}`).valueChanges();
+      } else {
+        return new Observable<any>();
+      }
+    })
+  );
+}
+
 
   // Adiciona um novo item
   addItem(item: any): void {
@@ -78,16 +90,14 @@ export class RestService {
   // Retorna todos os itens
   searchItems(searchTerm: string): Observable<any[]> {
     if (this.itemsRef) {
-      return this.itemsRef
-        .snapshotChanges()
-        .pipe(
-          map(changes =>
-            changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-          ),
-          map(items =>
-            items.filter(item => this.matchKeyword(item, searchTerm))
-          )
-        );
+      return this.itemsRef.snapshotChanges().pipe(
+        map((changes) =>
+          changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+        ),
+        map((items) =>
+          items.filter((item) => this.matchKeyword(item, searchTerm))
+        )
+      );
     } else {
       // Retorna um observable vazio
       return new Observable<any[]>();
@@ -125,22 +135,26 @@ export class RestService {
     const { weight, date } = value;
 
     if (this.itemsRef) {
-      this.afAuth.authState.subscribe(user => {
+      this.afAuth.authState.subscribe((user) => {
         if (user) {
           const weightPath = `${this.basePath}/${user.uid}/${pigRef}/weightHistory`;
           const newWeightRef = this.db.list(weightPath);
 
           const newWeight = {
             weight: weight,
-            date: date
+            date: date,
           };
 
-          newWeightRef.push(newWeight)
+          newWeightRef
+            .push(newWeight)
             .then(() => {
               console.log('Peso adicionado com sucesso ao documento do porco.');
             })
-            .catch(error => {
-              console.error('Erro ao adicionar peso ao documento do porco:', error);
+            .catch((error) => {
+              console.error(
+                'Erro ao adicionar peso ao documento do porco:',
+                error
+              );
             });
         } else {
           console.error('Usuário não autenticado.');

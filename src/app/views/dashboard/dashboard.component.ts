@@ -1,37 +1,99 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router'; // Importe ActivatedRoute
 
-import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
+import { RestService } from 'src/app/services/rest/rest.service';
+import { IPig } from 'src/app/model/pig/pig.interface';
+import {
+  BubbleDataPoint,
+  ChartData,
+  ChartTypeRegistry,
+  ScatterDataPoint,
+} from 'chart.js';
 
 interface IPigWeightEntry {
   date: string;
-  weight: number;
+  weight: string;
 }
 
 @Component({
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+  styleUrls: ['dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private chartsData: DashboardChartsData) {
-  }
+  data:
+    | ChartData<
+        keyof ChartTypeRegistry,
+        (number | ScatterDataPoint | BubbleDataPoint | null)[],
+        unknown
+      >
+    | undefined;
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private restService: RestService
+  ) {}
 
-  public pigWeightHistory: IPigWeightEntry[] = []; // Assuming you have the pig weight history data
-
-  public mainChart: IChartProps = {};
-  public chart: Array<IChartProps> = [];
-  public trafficRadioGroup = new UntypedFormGroup({
-    trafficRadio: new UntypedFormControl('Month')
-  });
+  public pig!: IPig;
 
   ngOnInit(): void {
-    // Assuming you fetch pig weight history data from a service
-    // and it's stored in this.pigWeightHistory
-    this.initCharts();
+    const pigId = this.activatedRoute.snapshot.queryParams['pigRef'];
+
+    if (pigId) {
+      this.loadPigAndInitChart(pigId);
+    }
   }
-  initCharts(): void {
-    // Assuming this.pigWeightHistory contains the pig's weight history
-    this.chartsData.initMainChart(this.pigWeightHistory);
-    this.mainChart = this.chartsData.mainChart;
+
+  loadPigAndInitChart(pigId: string): void {
+    this.restService.getItem(pigId).subscribe((pig: IPig) => {
+      console.log('Pig:', pig);
+      console.log('Weight history:', pig.weightHistory); // Verifique se o weightHistory está definido e não é undefined
+      this.pig = pig;
+      this.initChartForSinglePig(pig.weightHistory);
+    });
+  }
+
+  initChartForSinglePig(
+    weightHistory: { date: string; weight: string }[]
+  ): void {
+    // Convertendo weightHistory em um array usando Object.values()
+    const weightHistoryArray = Object.values(weightHistory);
+    console.log(weightHistoryArray);
+
+    const combinedDatesAndWeights = weightHistoryArray.map((entry) => ({
+      date: entry.date,
+      weight: parseFloat(entry.weight),
+    }));
+
+    combinedDatesAndWeights.sort((a, b) => {
+      if (a.date < b.date) {
+        return -1;
+      }
+      if (a.date > b.date) {
+        return 1;
+      }
+      return 0;
+    })
+
+
+
+    // Extrair as datas e os pesos do histórico
+    const dates = combinedDatesAndWeights.map((entry) => entry.date);
+    const weights = combinedDatesAndWeights.map((entry) => entry.weight);
+
+    console.log('dates:', dates);
+    console.log('weights:', weights);
+
+    this.data = {
+      labels: dates,
+      datasets: [
+        {
+          label: 'Peso',
+          backgroundColor: 'rgba(220, 220, 220, 0.2)',
+          borderColor: 'rgba(220, 220, 220, 1)',
+          pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+          pointBorderColor: '#fff',
+          data: weights,
+        },
+      ],
+    };
   }
 }

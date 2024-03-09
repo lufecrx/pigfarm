@@ -103,6 +103,18 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
     return Array.from({ length: this.totalPages }, (_, index) => index + 1);
   }
 
+  editMode(pig: IPig): void {
+    this.router.navigate(['/manager/edit-pig'], {
+      queryParams: { pigRef: pig.key },
+    });
+  }
+
+  chartMode(pig: IPig): void {
+    this.router.navigate(['/dashboard'], {
+      queryParams: { pigRef: pig.key },
+    });
+  }
+
   toggleDeleteMode(): void {
     this.modalDelete = !this.modalDelete;
   }
@@ -111,11 +123,6 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
     this.modalDelete = event;
   }
 
-  editMode(pig: IPig): void {
-    this.router.navigate(['/manager/edit-pig'], {
-      queryParams: { pigRef: pig.key },
-    });
-  }
 
   deleteMode(pig: IPig): void {
     if (pig.key) {

@@ -12,7 +12,7 @@ export interface IPig {
   status: StatusPig;
   gender: GenderPig;
 
-  weightHistory: { date: string, weight: number }[];
+  weightHistory: { date: string, weight: string }[];
 
   key?: string;
   editing?: boolean;

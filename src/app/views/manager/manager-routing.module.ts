@@ -3,8 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ListPigsComponent } from './list-pigs/list-pigs.component';
 import { EditPigComponent } from './edit-pig/edit-pig.component';
 
-import { WeightControlComponent } from './weight-control/weight-control.component';
-
 const routes: Routes = [
   {
     path: '',
@@ -31,13 +29,6 @@ const routes: Routes = [
           title: 'Edit Pig',
         },
       },
-      {
-        path: 'weight-control',
-        component: WeightControlComponent,
-        data: {
-          title: 'Weight Control',
-        },
-      }
     ]
   }
 ];
