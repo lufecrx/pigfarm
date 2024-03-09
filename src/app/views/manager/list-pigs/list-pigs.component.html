@@ -1,3 +1,44 @@
+<c-row class="g-3">
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label cLabel for="fatherIdFilter">Filter by Father ID:</label>
+      <input class="form-control" type="text" id="fatherIdFilter" [(ngModel)]="fatherIdFilter" (input)="applyFilters()">
+  </c-col>
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label for="motherIdFilter">Filter by Mother ID:</label>
+      <input class="form-control" type="text" id="motherIdFilter" [(ngModel)]="motherIdFilter" (input)="applyFilters()">
+  </c-col>
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label for="dateOfBirthFilter">Filter by Date of Birth:</label>
+      <input class="form-control" type="date" id="dateOfBirthFilter" [(ngModel)]="dateOfBirthFilter" (input)="applyFilters()">
+  </c-col>
+</c-row>
+
+<c-row class="g-3">
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label for="dateOfExitFilter">Filter by Date of Exit:</label>
+      <input class="form-control" type="date" id="dateOfExitFilter" [(ngModel)]="dateOfExitFilter" (input)="applyFilters()">
+  </c-col>
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label for="genderFilter">Filter by Gender:</label>
+      <select class="form-control" id="genderFilter" [(ngModel)]="genderFilter" (change)="applyFilters()">
+        <option value="">All</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+  </c-col>
+  <c-col [sm]="12" [md]="6" [lg]="4">
+      <label for="statusFilter">Filter by Status:</label>
+      <select class="form-control" id="statusFilter" [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option value="">All</option>
+        <option value="Alive">Alive</option>
+        <option value="Dead">Dead</option>
+        <option value="Sold">Sold</option>
+      </select>
+  </c-col>
+</c-row>
+
+
+
 <table cTable>
   <thead cTableColor="light">
     <tr>
@@ -13,7 +54,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let pig of pigs">
+    <tr *ngFor="let pig of filteredPigs">
       <td>{{ pig.identifier }}</td>
       <td>{{ pig.father_id }}</td>
       <td>{{ pig.mother_id }}</td>

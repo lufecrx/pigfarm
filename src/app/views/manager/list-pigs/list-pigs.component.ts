@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { IPig } from '../../../model/pig/pig.interface';
 import { RestService } from 'src/app/services/rest/rest.service';
 import { Router } from '@angular/router';
@@ -8,8 +8,9 @@ import { Router } from '@angular/router';
   templateUrl: './list-pigs.component.html',
   styleUrls: ['./list-pigs.component.scss'],
 })
-export class ListPigsComponent implements OnInit {
+export class ListPigsComponent implements OnInit, AfterViewInit {
   pigs: IPig[] = [];
+  filteredPigs: IPig[] = [];
   currentPage: number = 1;
   pageSize: number = 10; // Número de itens por página
   totalItems: number = 0; // Total de itens
@@ -24,12 +25,40 @@ export class ListPigsComponent implements OnInit {
     this.getPigs();
   }
 
+  ngAfterViewInit(): void {
+    this.filteredPigs = this.pigs;
+  }
+
+  // Variables to hold filter values
+  fatherIdFilter: string = '';
+  motherIdFilter: string = '';
+  dateOfBirthFilter: string = '';
+  dateOfExitFilter: string = '';
+  genderFilter: string = '';
+  statusFilter: string = '';
+
+  // Function to apply filters
+  applyFilters() {
+    this.filteredPigs = this.pigs.filter(
+      (pig) =>
+        pig.father_id.includes(this.fatherIdFilter) &&
+        pig.mother_id.includes(this.motherIdFilter) &&
+        (this.dateOfBirthFilter === '' ||
+          pig.date_birth === this.dateOfBirthFilter) &&
+        (this.dateOfExitFilter === '' ||
+          pig.date_exit === this.dateOfExitFilter) &&
+        (this.genderFilter === '' || pig.gender === this.genderFilter) &&
+        (this.statusFilter === '' || pig.status === this.statusFilter)
+    );
+  }
+
   getPigs(): void {
     this.restService
       .getItemsPaginated(this.currentPage, this.pageSize)
       .subscribe((response) => {
         this.pigs = response;
         this.totalItems = response.length;
+        this.filteredPigs = this.pigs;
       });
   }
 
