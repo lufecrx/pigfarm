@@ -32,7 +32,7 @@ export const navItems: INavData[] = [
   },
   {
     name: 'GitHub',
-    url: 'https://github.com/lufecrx/pigfarm-angular',
+    url: 'https://github.com/lufecrx',
     iconComponent: { name: 'cibGithub' },
     attributes: { target: '_blank', class: '-text-dark' },
     class: 'mt-auto'

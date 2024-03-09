@@ -66,16 +66,19 @@ export class WeightControlComponent implements OnInit, AfterViewInit {
 
   // Function to apply filters
   applyFilters() {
+    console.log(this.dateFilter, this.weightFilter);
     this.filteredWeightHistory = this.weightHistory.filter(
       (weight) =>
         (this.dateFilter === '' || weight.date === this.dateFilter) &&
         (this.weightFilter === '' || weight.weight.includes(this.weightFilter))
     );
+    console.log(this.weightHistory);
   }
 
   getWeightHistory(pigId: string): void {
     this.restService.getItem(pigId).subscribe((pig: IPig) => {
       this.weightHistory = Object.values(pig.weightHistory);
+      this.filteredWeightHistory = this.weightHistory;
     });
   }
 
