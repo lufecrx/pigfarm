@@ -33,6 +33,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./views/registration/registration.module').then((m) => m.RegistrationModule),
       },
+      {
+        path: 'manager',
+        loadChildren: () =>
+          import('./views/manager/manager.module').then((m) => m.ManagerModule),
+      }
     ],
     canActivate: [authGuard]
   },
@@ -65,7 +70,6 @@ const routes: Routes = [
       title: 'Register Page'
     }
   },
-  {path: '**', redirectTo: 'dashboard', pathMatch: 'full'}
 ];
 
 @NgModule({

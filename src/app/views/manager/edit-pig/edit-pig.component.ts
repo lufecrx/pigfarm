@@ -3,21 +3,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RestService } from '../../../services/rest/rest.service';
 import { ValidationFormsService } from '../../../services/validation/validation-forms.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-register-pig',
-  templateUrl: './register-pig.component.html',
-  styleUrl: './register-pig.component.scss',
+  selector: 'app-edit-pig',
+  templateUrl: './edit-pig.component.html',
+  styleUrl: './edit-pig.component.scss',
 })
-export class RegisterPigComponent implements OnInit {
+export class EditPigComponent implements OnInit {
   formPig!: FormGroup;
   submitted = false;
   formErrors: any;
   formControls!: string[];
+  pigRef: string = '';
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private router: Router,
+    private route: Router,
+    private activatedRoute: ActivatedRoute,
     private validationService: ValidationFormsService,
     private restService: RestService,
     )
@@ -26,6 +29,8 @@ export class RegisterPigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.pigRef = this.activatedRoute.snapshot.queryParams['pigRef'];
+
     this.formPig = this.formBuilder.group({
       identifier: [
           '',
@@ -89,8 +94,8 @@ export class RegisterPigComponent implements OnInit {
     if (this.formPig.valid) {
       try {
         const newPig = this.formPig.value;
-        await this.restService.addItem(newPig);
-        this.router.navigate(['/manager/list-pigs']);
+        await this.restService.updateItem(this.pigRef, newPig);
+        this.route.navigate(['/manager/list-pigs']);
       } catch (error : any) {
         console.error('Erro ao enviar o formulário:', error);
       }

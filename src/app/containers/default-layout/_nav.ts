@@ -7,7 +7,7 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Pig List',
-    url: '/pig-list',
+    url: 'manager/list-pigs',
     iconComponent: { name: 'cil-notes' },
   },
   {

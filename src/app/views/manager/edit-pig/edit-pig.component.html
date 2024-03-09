@@ -5,9 +5,7 @@
         <c-card class="mx-4">
           <c-card-body class="p-4">
             <form (ngSubmit)="onSubmit()" [formGroup]="formPig" cForm novalidate>
-              <h1>Register a new pig</h1>
-              <p class="text-medium-emphasis">Fill in the information correctly and send the data to our database.</p>
-
+              <h1>Edit Pig</h1>
 
               <c-row class="mb-1">
                 <label [sm]="4" cCol cLabel="col" for="identifier">Identifier</label>
@@ -170,7 +168,7 @@
 
               <c-col xs="6">
                 <button type="submit" cButton class="px-4 mt-4" color="primary">
-                  Register
+                  Edit
                 </button>
               </c-col>
             </form>

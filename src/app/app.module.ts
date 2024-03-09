@@ -33,7 +33,8 @@ import {
   SidebarModule,
   TabsModule,
   UtilitiesModule,
-} from '@coreui/angular';
+  TableModule,
+} from '@coreui/angular'
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -77,6 +78,7 @@ const APP_CONTAINERS = [
     FormModule,
     FormsModule,
     ReactiveFormsModule,
+    TableModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
   providers: [
