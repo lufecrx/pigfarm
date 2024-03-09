@@ -17,16 +17,16 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Registration',
-    url: '/manager/registration',
+    url: '/registration',
     iconComponent: { name: 'cil-puzzle' },
     children: [
       {
         name: 'Register Pigs',
-        url: '/manager/registration/pig-registration',
+        url: '/registration/register-pig',
       },
       {
         name: 'Register Weight',
-        url: '/manager/registration/weight-registration'
+        url: '/registration/register-weight',
       },
     ]
   },

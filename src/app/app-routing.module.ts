@@ -10,11 +10,7 @@ import { RegisterComponent } from './views/pages/register/register.component';
 import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  {
-    path: 'dashboard',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
+
   {
     path: '',
     component: DefaultLayoutComponent,

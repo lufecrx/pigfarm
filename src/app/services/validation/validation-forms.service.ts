@@ -13,9 +13,9 @@ export class ValidationFormsService {
     usernameMin: 6,
     passwordMin: 4,
     passwordPattern: '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}',
-    datePattern: '/^\d{4}-\d{2}-\d{2}$/',
-    statusOptions: ['Alive', 'Dead', 'Sold'],
-    genderOptions: ['Male', 'Female'],
+    datePattern: /^\d{4}-\d{2}-\d{2}$/,
+    // statusOptions: ['Alive', 'Dead', 'Sold'],
+    // genderOptions: ['Male', 'Female'],
     identifierPattern: '^[0-9]+$',
   };
 
@@ -91,23 +91,23 @@ export class ValidationFormsService {
       },
       status: {
         required: 'Status is required',
-        inOptions: `Status must be one of the following: ${this.formRules.statusOptions.join(', ')}`
+        // inOptions: `Status must be one of the following: ${this.formRules.statusOptions.join(', ')}`
       },
       gender: {
         required: 'Gender is required',
-        inOptions: `Gender must be one of the following: ${this.formRules.genderOptions.join(', ')}`
+        // inOptions: `Gender must be one of the following: ${this.formRules.genderOptions.join(', ')}`
       },
     };
   }
 }
 
 
-export function inOptionsValidator(options: string[]): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
-    if (options.indexOf(value) === -1) {
-      return { inOptions: true };
-    }
-    return null;
-  };
-}
+// export function inOptionsValidator(options: string[]): ValidatorFn {
+//   return (control: AbstractControl): ValidationErrors | null => {
+//     const value = control.value;
+//     if (options.indexOf(value) === -1) {
+//       return { inOptions: true };
+//     }
+//     return null;
+//   };
+// }

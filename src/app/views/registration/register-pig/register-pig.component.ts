@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-// import { RestService } from '../../../services/rest/rest.service';
-import { ValidationFormsService, inOptionsValidator } from '../../../services/validation/validation-forms.service';
+import { RestService } from '../../../services/rest/rest.service';
+import { ValidationFormsService } from '../../../services/validation/validation-forms.service';
 
 @Component({
   selector: 'app-register-pig',
@@ -19,7 +19,7 @@ export class RegisterPigComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private router: Router,
     private validationService: ValidationFormsService,
-    // private restService: RestService,
+    private restService: RestService,
     )
   {
     this.formErrors = this.validationService.errorMessages;
@@ -72,10 +72,6 @@ export class RegisterPigComponent implements OnInit {
           '',
           [
             Validators.required,
-            Validators.pattern(this.validationService.formRules.nonEmpty),
-            inOptionsValidator(
-              this.validationService.formRules.statusOptions
-            ),
           ],
         ],
       gender:
@@ -83,9 +79,6 @@ export class RegisterPigComponent implements OnInit {
           '',
           [
             Validators.required,
-            inOptionsValidator(
-              this.validationService.formRules.genderOptions
-            ),
           ],
         ],
     });
@@ -96,7 +89,7 @@ export class RegisterPigComponent implements OnInit {
     if (this.formPig.valid) {
       try {
         const newTreatment = this.formPig.value;
-        // await this.restService.addItem(newTreatment);
+        await this.restService.addItem(newTreatment);
         // this.router.navigate(['/list-pigs']);
       } catch (error : any) {
         console.error('Erro ao enviar o formulário:', error);
