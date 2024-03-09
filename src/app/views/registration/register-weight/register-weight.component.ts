@@ -6,24 +6,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidationFormsService } from 'src/app/services/validation/validation-forms.service';
 
 @Component({
-  selector: 'app-list-pigs',
-  templateUrl: './list-pigs.component.html',
-  styleUrls: ['./list-pigs.component.scss'],
+  selector: 'app-register-weight',
+  templateUrl: './register-weight.component.html',
+  styleUrl: './register-weight.component.scss',
 })
-export class ListPigsComponent implements OnInit, AfterViewInit {
+export class RegisterWeightComponent implements OnInit, AfterViewInit {
   pigs: IPig[] = [];
   filteredPigs: IPig[] = [];
   currentPage: number = 1;
   pageSize: number = 10; // Número de itens por página
   totalItems: number = 0; // Total de itens
 
-  modalWeight: boolean = false;
-  modalDelete: boolean = false;
 
   formAddWeight!: FormGroup;
   formErrors: any;
+  modalSubmitted = false;
+
+  modalVisible: boolean = false;
   pigRef: string = '';
-  weightSubmitted: boolean = false;
 
   constructor(
     private restService: RestService,
@@ -39,6 +39,7 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
         '',
         [
           Validators.required,
+          // Apenas números em Kg
           Validators.pattern(this.validation.formRules.weightPattern),
         ],
       ],
@@ -58,10 +59,7 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
   }
 
   // Variables to hold filter values
-  fatherIdFilter: string = '';
-  motherIdFilter: string = '';
-  dateOfBirthFilter: string = '';
-  dateOfExitFilter: string = '';
+  identifierFilter: string = '';
   genderFilter: string = '';
   statusFilter: string = '';
 
@@ -69,12 +67,7 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
   applyFilters() {
     this.filteredPigs = this.pigs.filter(
       (pig) =>
-        pig.father_id.includes(this.fatherIdFilter) &&
-        pig.mother_id.includes(this.motherIdFilter) &&
-        (this.dateOfBirthFilter === '' ||
-          pig.date_birth === this.dateOfBirthFilter) &&
-        (this.dateOfExitFilter === '' ||
-          pig.date_exit === this.dateOfExitFilter) &&
+        pig.identifier.includes(this.identifierFilter) &&
         (this.genderFilter === '' || pig.gender === this.genderFilter) &&
         (this.statusFilter === '' || pig.status === this.statusFilter)
     );
@@ -103,68 +96,33 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
     return Array.from({ length: this.totalPages }, (_, index) => index + 1);
   }
 
-  toggleDeleteMode(): void {
-    this.modalDelete = !this.modalDelete;
+  toggleModal(): void {
+    this.modalVisible = !this.modalVisible;
   }
 
-  handleDeleteMode(event: any) {
-    this.modalDelete = event;
-  }
-
-  editMode(pig: IPig): void {
-    this.router.navigate(['/manager/edit-pig'], {
-      queryParams: { pigRef: pig.key },
-    });
-  }
-
-  deleteMode(pig: IPig): void {
-    if (pig.key) {
-      this.pigRef = pig.key;
-    }
-    this.toggleDeleteMode();
-  }
-
-  deletePig(): void {
-    if (this.pigRef) {
-      this.restService.deleteItem(this.pigRef);
-      this.getPigs();
-      this.toggleDeleteMode();
-      this.pigRef = '';
-    }
-  }
-
-  cancelDelete(): void {
-    this.toggleDeleteMode();
-    this.pigRef = '';
-  }
-
-  toggleAddWeight(): void {
-    this.modalWeight = !this.modalWeight;
-  }
-
-  handleAddWeight(event: any) {
-    this.modalWeight = event;
+  handleModalChange(event: any) {
+    this.modalVisible = event;
   }
 
   addWeightMode(pig: IPig): void {
     if (pig.key) {
       this.pigRef = pig.key;
     }
-    this.toggleAddWeight();
+    this.toggleModal();
   }
 
   addWeight(): void {
-    this.weightSubmitted = true;
+    this.modalSubmitted = true;
     if (this.pigRef) {
       this.restService.addWeightToPig(this.pigRef, this.formAddWeight.value);
       this.getPigs();
-      this.toggleAddWeight();
+      this.toggleModal();
       this.pigRef = '';
     }
   }
 
-  cancelAddWeight(): void {
-    this.toggleAddWeight();
+  cancelAdd(): void {
+    this.toggleModal();
     this.pigRef = '';
   }
 }

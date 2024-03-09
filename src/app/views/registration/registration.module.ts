@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RegisterPigComponent } from './register-pig/register-pig.component';
+import { RegisterWeightComponent } from './register-weight/register-weight.component';
 
 import { RegistrationRoutingModule } from './registration-routing.module';
+
 
 import {
   ButtonGroupModule,
@@ -14,10 +16,16 @@ import {
   DropdownModule,
   FormModule,
   GridModule,
+  ModalModule,
   NavbarModule,
   NavModule,
+  PaginationModule,
   SharedModule,
-  UtilitiesModule
+  UtilitiesModule,
+  AvatarModule,
+  ProgressModule,
+  TableModule,
+  TabsModule,
 } from '@coreui/angular';
 
 import { IconModule } from '@coreui/icons-angular';
@@ -25,6 +33,7 @@ import { IconModule } from '@coreui/icons-angular';
 @NgModule({
   declarations: [
     RegisterPigComponent,
+    RegisterWeightComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +53,12 @@ import { IconModule } from '@coreui/icons-angular';
     NavbarModule,
     FormsModule,
     ReactiveFormsModule,
+    ModalModule,
+    PaginationModule,
+    AvatarModule,
+    ProgressModule,
+    TableModule,
+    TabsModule,
   ],
 })
 export class RegistrationModule {

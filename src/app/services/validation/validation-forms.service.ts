@@ -17,6 +17,7 @@ export class ValidationFormsService {
     // statusOptions: ['Alive', 'Dead', 'Sold'],
     // genderOptions: ['Male', 'Female'],
     identifierPattern: '^[0-9]+$',
+    weightPattern: '^(\\d+\\.?\\d*)$',
   };
 
   formErrors = {
@@ -34,6 +35,8 @@ export class ValidationFormsService {
     date_exit: '',
     status: '',
     gender: '',
+    weight: '',
+    date: '',
     accept: false
   };
 
@@ -97,6 +100,14 @@ export class ValidationFormsService {
         required: 'Gender is required',
         // inOptions: `Gender must be one of the following: ${this.formRules.genderOptions.join(', ')}`
       },
+      weight: {
+        required: 'Weight is required',
+        pattern: 'Weight must be a number valid'
+      },
+      date: {
+        required: 'Date is required',
+        pattern: 'Invalid date format. Please use dd/mm/yyyy format'
+      }
     };
   }
 }

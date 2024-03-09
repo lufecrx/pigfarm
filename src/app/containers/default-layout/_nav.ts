@@ -11,7 +11,7 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-notes' },
   },
   {
-    name: 'Weight control',
+    name: 'Weight Control',
     url: '/weight-control',
     iconComponent: { name: 'cil-speedometer' },
   },

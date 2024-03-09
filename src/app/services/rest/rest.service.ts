@@ -61,20 +61,6 @@ export class RestService {
     }
   }
 
-  // Retorna um item específico pelo seu ID
-  getItem(key: string): Observable<any> {
-    return this.afAuth.authState.pipe(
-      map(user => {
-        if (user) {
-          return this.db.object(`${this.basePath}/${user.uid}/${key}`).valueChanges();
-        } else {
-          // Retorna um observable vazio
-          return new Observable<any>();
-        }
-      })
-    );
-  }
-
   // Adiciona um novo item
   addItem(item: any): void {
     if (this.itemsRef) {
@@ -132,6 +118,36 @@ export class RestService {
   deleteItem(key: string): void {
     if (this.itemsRef) {
       this.itemsRef.remove(key);
+    }
+  }
+
+  addWeightToPig(pigRef: string, value: any): void {
+    const { weight, date } = value;
+
+    if (this.itemsRef) {
+      this.afAuth.authState.subscribe(user => {
+        if (user) {
+          const weightPath = `${this.basePath}/${user.uid}/${pigRef}/weightHistory`;
+          const newWeightRef = this.db.list(weightPath);
+
+          const newWeight = {
+            weight: weight,
+            date: date
+          };
+
+          newWeightRef.push(newWeight)
+            .then(() => {
+              console.log('Peso adicionado com sucesso ao documento do porco.');
+            })
+            .catch(error => {
+              console.error('Erro ao adicionar peso ao documento do porco:', error);
+            });
+        } else {
+          console.error('Usuário não autenticado.');
+        }
+      });
+    } else {
+      console.error('Referência de itens não está definida.');
     }
   }
 }
