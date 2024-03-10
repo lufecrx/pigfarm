@@ -10,7 +10,7 @@ import { ValidationFormsService } from 'src/app/services/validation/validation-f
   templateUrl: './list-pigs.component.html',
   styleUrls: ['./list-pigs.component.scss'],
 })
-export class ListPigsComponent implements OnInit, AfterViewInit {
+export class ListPigsComponent implements OnInit {
   pigs: IPig[] = [];
   filteredPigs: IPig[] = [];
   currentPage: number = 1;
@@ -25,6 +25,8 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
   pigRef: string = '';
   weightSubmitted: boolean = false;
 
+  loading: boolean = false;
+
   avatar: string = './assets/img/avatars/pig.png';
 
   constructor(
@@ -36,6 +38,7 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getPigs();
+
     this.formAddWeight = this.formBuilder.group({
       weight: [
         '',
@@ -53,10 +56,6 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
         ],
       ],
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.filteredPigs = this.pigs;
   }
 
   // Variables to hold filter values
@@ -83,12 +82,16 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
   }
 
   getPigs(): void {
+    this.loading = true;
+
     this.restService
       .getItemsPaginated(this.currentPage, this.pageSize)
       .subscribe((response) => {
         this.pigs = response;
         this.totalItems = response.length;
         this.filteredPigs = this.pigs;
+
+        this.loading = false;
       });
   }
 

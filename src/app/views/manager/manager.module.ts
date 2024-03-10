@@ -16,6 +16,7 @@ import {
   PaginationModule,
   DropdownModule,
   ModalModule,
+  SpinnerModule,
 } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 
@@ -53,6 +54,7 @@ import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module'
     PaginationModule,
     DropdownModule,
     ModalModule,
+    SpinnerModule,
     UtilsPipesModule,
   ]
 })

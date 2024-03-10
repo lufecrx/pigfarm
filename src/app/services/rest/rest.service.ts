@@ -46,18 +46,31 @@ export class RestService {
 
   // Retornar itens paginados
   getItemsPaginated(page: number, pageSize: number): Observable<any[]> {
-    if (this.itemsRef) {
-      return this.itemsRef.snapshotChanges().pipe(
-        map((changes) =>
-          changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
-        ),
-        map((items) => items.slice((page - 1) * pageSize, page * pageSize))
-      );
-    } else {
-      // Retorna um observable vazio
-      return new Observable<any[]>();
-    }
+    return this.afAuth.authState.pipe(
+      take(1),
+      switchMap(user => {
+        if (user) {
+          if (this.itemsRef) {
+            return this.itemsRef.snapshotChanges().pipe(
+              map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))),
+              map(items => items.slice((page - 1) * pageSize, page * pageSize))
+            );
+          } else {
+            // Se itemsRef não estiver definido
+            this.itemsRef = this.db.list(`${this.basePath}/${user.uid}`);
+            return this.itemsRef.snapshotChanges().pipe(
+              map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))),
+              map(items => items.slice((page - 1) * pageSize, page * pageSize))
+            );
+          }
+        } else {
+          // Se o usuário não estiver autenticado, retorne um Observable vazio
+          return of([]);
+        }
+      })
+    );
   }
+
 
   // Retorna um item específico pelo seu ID
   getItem(key: string): Observable<any> {

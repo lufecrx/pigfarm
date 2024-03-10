@@ -15,7 +15,7 @@ export interface IWeight {
   templateUrl: './weight-control.component.html',
   styleUrls: ['./weight-control.component.scss'],
 })
-export class WeightControlComponent implements OnInit, AfterViewInit {
+export class WeightControlComponent implements OnInit {
   wh!: IWeight;
   pigSelected!: IPig;
   whRef!: IWeight;
@@ -32,6 +32,8 @@ export class WeightControlComponent implements OnInit, AfterViewInit {
   formAddWeight!: FormGroup;
   modalAddVisible: boolean = false;
   modalDelete: boolean = false;
+
+  loading: boolean = false;
 
   avatar: string = './assets/img/avatars/pig.png';
 
@@ -81,10 +83,6 @@ export class WeightControlComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.filteredWeightHistory = this.weightHistory;
-  }
-
   showChart(): void {
     this.router.navigate(['/dashboard'], {
       queryParams: { pigRef: this.pigRef },
@@ -97,20 +95,22 @@ export class WeightControlComponent implements OnInit, AfterViewInit {
 
   // Function to apply filters
   applyFilters() {
-    console.log(this.dateFilter, this.weightFilter);
     this.filteredWeightHistory = this.weightHistory.filter(
       (weight) =>
         (this.dateFilter === '' || weight.date === this.dateFilter) &&
         (this.weightFilter === '' || weight.weight.includes(this.weightFilter))
     );
-    console.log(this.weightHistory);
   }
 
   getWeightHistory(pigId: string): void {
+    this.loading = true;
+
     this.restService.getItem(pigId).subscribe((pig: IPig) => {
       this.pigSelected = pig;
       this.weightHistory = Object.values(pig.weightHistory);
       this.filteredWeightHistory = this.weightHistory;
+
+      this.loading = false;
     });
   }
 

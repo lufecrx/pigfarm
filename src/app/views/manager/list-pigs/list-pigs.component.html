@@ -49,6 +49,7 @@
       </c-card-header>
       <c-card-body>
 
+
         <table [hover]="true" [responsive]="true" [striped]="true" align="middle" cTable class="mb-0 border">
 
           <thead cTableColor="light">
@@ -63,8 +64,18 @@
               <th class="text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
 
+          <tbody *ngIf="loading">
+            <tr>
+              <td colspan="6" class="text-center">
+                <div class="m-2">
+                  <c-spinner label="Loading..."></c-spinner>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="!loading">
             <tr *ngFor="let pig of filteredPigs; index as i">
 
               <td class="text-center">
@@ -114,7 +125,7 @@
                   <button cButton cDropdownToggle color="secondary" size="sm">
                     <svg cIcon name="cil-settings"></svg>
                   </button>
-                  <ul cDropdownMenu class="position-fixed" >
+                  <ul cDropdownMenu class="position-fixed">
                     <li><button cDropdownItem (click)="editMode(pig)">Edit</button></li>
                     <li><button cDropdownItem (click)="addWeightMode(pig)">Add Weight</button></li>
                     <li><button cDropdownItem (click)="weightControlMode(pig)">Weight Control</button></li>
