@@ -91,6 +91,7 @@ export class EditPigComponent implements OnInit {
   }
 
   async onSubmit() {
+    this.submitted = true;
     if (this.formPig.valid) {
       try {
         const newPig = this.formPig.value;

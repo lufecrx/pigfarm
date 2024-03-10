@@ -127,13 +127,14 @@
                       ? false
                       : undefined
                   " autocomplete="off" cSelect formControlName="status" id="status" type="text">
-                    <option disabled>Status</option>
+                    <option value="" disabled>Select the pig's condition</option>
                     <option value="Alive">Alive</option>
                     <option value="Dead">Dead</option>
                     <option value="Sold">Sold</option>
                   </select>
                   <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
                     <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors['required']">Status is required</div>
                       <div *ngIf="errors['inOptions']">
                         {{ formErrors['status'].inOptions }}
                       </div>
@@ -152,12 +153,13 @@
                       ? false
                       : undefined
                   " autocomplete="off" cSelect formControlName="gender" id="gender" required type="text">
-                    <option disabled>Gender</option>
+                    <option value="" disabled>Select the pig's gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
                   <c-form-feedback *ngIf="submitted || ctrl.invalid" [valid]="!(submitted || ctrl.invalid)">
                     <ng-container *ngIf="ctrl.errors as errors">
+                      <div *ngIf="errors['required']">Gender is required</div>
                       <div *ngIf="errors['inOptions']">
                         {{ formErrors['status'].inOptions }}
                       </div>

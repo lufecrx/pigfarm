@@ -82,7 +82,7 @@
     <input class="form-control" type="date" id="dateFilter" [(ngModel)]="dateFilter" (input)="applyFilters()">
   </c-col>
   <c-col cLabel [sm]="12" [md]="6" [lg]="4">
-    <label for="weightFilter">Filter by Weight:</label>
+    <label cLabel for="weightFilter">Filter by Weight:</label>
     <input class="form-control" type="text" id="weightFilter" [(ngModel)]="weightFilter" (input)="applyFilters()">
   </c-col>
 </c-row>
@@ -114,7 +114,7 @@
               <td>{{ wh.weight }} kg</td>
 
               <td class="text-center">
-                <c-dropdown variant="btn-group">
+                <c-dropdown variant="btn-group" direction="dropup-center">
                   <button cButton cDropdownToggle color="secondary" size="sm">
                     <svg cIcon name="cil-settings"></svg>
                   </button>

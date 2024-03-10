@@ -110,11 +110,11 @@
               </td>
 
               <td class="text-center">
-                <c-dropdown variant="btn-group">
+                <c-dropdown variant="btn-group" direction="dropup-center">
                   <button cButton cDropdownToggle color="secondary" size="sm">
                     <svg cIcon name="cil-settings"></svg>
                   </button>
-                  <ul cDropdownMenu class="position-fixed">
+                  <ul cDropdownMenu class="position-fixed" >
                     <li><button cDropdownItem (click)="editMode(pig)">Edit</button></li>
                     <li><button cDropdownItem (click)="addWeightMode(pig)">Add Weight</button></li>
                     <li><button cDropdownItem (click)="weightControlMode(pig)">Weight Control</button></li>
