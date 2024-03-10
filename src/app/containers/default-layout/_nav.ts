@@ -19,10 +19,6 @@ export const navItems: INavData[] = [
         name: 'Register Pigs',
         url: '/registration/register-pig',
       },
-      {
-        name: 'Register Weight',
-        url: '/registration/register-weight',
-      },
     ]
   },
   {

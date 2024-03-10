@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RegisterPigComponent } from './register-pig/register-pig.component';
-import { RegisterWeightComponent } from './register-weight/register-weight.component';
 
 import { RegistrationRoutingModule } from './registration-routing.module';
 
@@ -29,11 +28,11 @@ import {
 } from '@coreui/angular';
 
 import { IconModule } from '@coreui/icons-angular';
+import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module';
 
 @NgModule({
   declarations: [
     RegisterPigComponent,
-    RegisterWeightComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +58,7 @@ import { IconModule } from '@coreui/icons-angular';
     ProgressModule,
     TableModule,
     TabsModule,
+    UtilsPipesModule,
   ],
 })
 export class RegistrationModule {

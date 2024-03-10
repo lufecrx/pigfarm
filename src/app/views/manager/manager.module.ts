@@ -24,7 +24,7 @@ import { ListPigsComponent } from './list-pigs/list-pigs.component';
 import { EditPigComponent } from './edit-pig/edit-pig.component';
 import { WeightControlComponent } from './weight-control/weight-control.component';
 
-import { CalculateAgePipe } from '../../services/pipes/calculate-age.pipe';
+import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module';
 
 
 @NgModule({
@@ -32,7 +32,6 @@ import { CalculateAgePipe } from '../../services/pipes/calculate-age.pipe';
     ListPigsComponent,
     EditPigComponent,
     WeightControlComponent,
-    CalculateAgePipe,
   ],
   imports: [
     ManagerRoutingModule,
@@ -54,6 +53,7 @@ import { CalculateAgePipe } from '../../services/pipes/calculate-age.pipe';
     PaginationModule,
     DropdownModule,
     ModalModule,
+    UtilsPipesModule,
   ]
 })
 export class ManagerModule {

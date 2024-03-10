@@ -25,6 +25,8 @@ export class ListPigsComponent implements OnInit, AfterViewInit {
   pigRef: string = '';
   weightSubmitted: boolean = false;
 
+  avatar: string = './assets/img/avatars/pig.png';
+
   constructor(
     private restService: RestService,
     private router: Router,
