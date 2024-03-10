@@ -19,6 +19,8 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
+import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module';
+import { FormatDatePipe } from 'src/app/services/pipes/format-date.pipe';
 
 @NgModule({
   imports: [
@@ -38,8 +40,10 @@ import { DashboardComponent } from './dashboard.component';
     ChartjsModule,
     AvatarModule,
     TableModule,
+    UtilsPipesModule,
   ],
-  declarations: [DashboardComponent]
+  declarations: [DashboardComponent],
+  providers: [FormatDatePipe],
 })
 export class DashboardModule {
 }

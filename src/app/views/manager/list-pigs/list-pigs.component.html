@@ -4,11 +4,11 @@
     <input class="form-control" type="text" id="fatherIdFilter" [(ngModel)]="fatherIdFilter" (input)="applyFilters()">
   </c-col>
   <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="motherIdFilter">Filter by Mother ID:</label>
+    <label cLabel for="motherIdFilter">Filter by Mother ID:</label>
     <input class="form-control" type="text" id="motherIdFilter" [(ngModel)]="motherIdFilter" (input)="applyFilters()">
   </c-col>
   <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="dateOfBirthFilter">Filter by Date of Birth:</label>
+    <label cLabel for="dateOfBirthFilter">Filter by Date of Birth:</label>
     <input class="form-control" type="date" id="dateOfBirthFilter" [(ngModel)]="dateOfBirthFilter"
       (input)="applyFilters()">
   </c-col>
@@ -16,12 +16,12 @@
 
 <c-row class="g-3">
   <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="dateOfExitFilter">Filter by Date of Exit:</label>
+    <label cLabel for="dateOfExitFilter">Filter by Date of Exit:</label>
     <input class="form-control" type="date" id="dateOfExitFilter" [(ngModel)]="dateOfExitFilter"
       (input)="applyFilters()">
   </c-col>
   <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="genderFilter">Filter by Gender:</label>
+    <label cLabel for="genderFilter">Filter by Gender:</label>
     <select class="form-control" id="genderFilter" [(ngModel)]="genderFilter" (change)="applyFilters()">
       <option value="">All</option>
       <option value="Male">Male</option>
@@ -29,7 +29,7 @@
     </select>
   </c-col>
   <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="statusFilter">Filter by Status:</label>
+    <label cLabel for="statusFilter">Filter by Status:</label>
     <select class="form-control" id="statusFilter" [(ngModel)]="statusFilter" (change)="applyFilters()">
       <option value="">All</option>
       <option value="Alive">Alive</option>

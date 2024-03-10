@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FormatDatePipe implements PipeTransform {
 
-  transform(value: string): string  {
+  transform(value: any): string  {
     // Format date aaaa-mm-dd to dd/mm/aaaa
     const date = new Date(value);
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;

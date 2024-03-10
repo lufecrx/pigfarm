@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'; // Importe ActivatedRoute
+import { ActivatedRoute, Router } from '@angular/router'; // Importe ActivatedRoute
 
 import { RestService } from 'src/app/services/rest/rest.service';
 import { IPig } from 'src/app/model/pig/pig.interface';
@@ -9,6 +9,10 @@ import {
   ChartTypeRegistry,
   ScatterDataPoint,
 } from 'chart.js';
+
+import {
+  FormatDatePipe,
+} from 'src/app/services/pipes/format-date.pipe';
 
 interface IPigWeightEntry {
   date: string;
@@ -27,26 +31,30 @@ export class DashboardComponent implements OnInit {
         unknown
       >
     | undefined;
+
   constructor(
     private activatedRoute: ActivatedRoute,
-    private restService: RestService
+    private restService: RestService,
+    private formatDate: FormatDatePipe,
+    private router: Router,
   ) {}
 
-  public pig!: IPig;
+  pigSelected!: IPig;
+  pigRef: string = '';
+  avatar: string = './assets/img/avatars/pig.png';
 
   ngOnInit(): void {
-    const pigId = this.activatedRoute.snapshot.queryParams['pigRef'];
+    const pigRef = this.activatedRoute.snapshot.queryParams['pigRef'];
 
-    if (pigId) {
-      this.loadPigAndInitChart(pigId);
+    if (pigRef) {
+      this.pigRef = pigRef;
+      this.loadPigAndInitChart(pigRef);
     }
   }
 
-  loadPigAndInitChart(pigId: string): void {
-    this.restService.getItem(pigId).subscribe((pig: IPig) => {
-      console.log('Pig:', pig);
-      console.log('Weight history:', pig.weightHistory); // Verifique se o weightHistory está definido e não é undefined
-      this.pig = pig;
+  loadPigAndInitChart(pigRef: string): void {
+    this.restService.getItem(pigRef).subscribe((pig: IPig) => {
+      this.pigSelected = pig;
       this.initChartForSinglePig(pig.weightHistory);
     });
   }
@@ -74,11 +82,10 @@ export class DashboardComponent implements OnInit {
     })
 
     // Extrair as datas e os pesos do histórico
-    const dates = combinedDatesAndWeights.map((entry) => entry.date);
-    const weights = combinedDatesAndWeights.map((entry) => entry.weight);
+    let dates = combinedDatesAndWeights.map((entry) => entry.date);
+    let weights = combinedDatesAndWeights.map((entry) => entry.weight);
 
-    console.log('dates:', dates);
-    console.log('weights:', weights);
+    dates = dates.map((date) => this.formatDate.transform(date));
 
     this.data = {
       labels: dates,
@@ -93,5 +100,11 @@ export class DashboardComponent implements OnInit {
         },
       ],
     };
+  }
+
+  weightControl(): void {
+    this.router.navigate(['manager/weight-control'], {
+      queryParams: { pigRef: this.pigRef },
+    });
   }
 }
