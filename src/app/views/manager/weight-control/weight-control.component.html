@@ -1,14 +1,3 @@
-<c-row class="g-3">
-  <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="dateFilter">Filter by Date:</label>
-    <input class="form-control" type="date" id="dateFilter" [(ngModel)]="dateFilter" (input)="applyFilters()">
-  </c-col>
-  <c-col [sm]="12" [md]="6" [lg]="4">
-    <label for="weightFilter">Filter by Weight:</label>
-    <input class="form-control" type="text" id="weightFilter" [(ngModel)]="weightFilter" (input)="applyFilters()">
-  </c-col>
-</c-row>
-
 <c-row class="mt-4">
   <c-col xs>
     <c-card class="mb-4">
@@ -84,6 +73,17 @@
 
       </c-card-body>
     </c-card>
+  </c-col>
+</c-row>
+
+<c-row class="g-3">
+  <c-col [sm]="12" [md]="6" [lg]="4">
+    <label cLabel for="dateFilter">Filter by Date:</label>
+    <input class="form-control" type="date" id="dateFilter" [(ngModel)]="dateFilter" (input)="applyFilters()">
+  </c-col>
+  <c-col cLabel [sm]="12" [md]="6" [lg]="4">
+    <label for="weightFilter">Filter by Weight:</label>
+    <input class="form-control" type="text" id="weightFilter" [(ngModel)]="weightFilter" (input)="applyFilters()">
   </c-col>
 </c-row>
 
