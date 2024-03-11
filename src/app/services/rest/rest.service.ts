@@ -87,6 +87,13 @@ export class RestService {
     );
   }
 
+  // Checa se o item existe
+  itemExists(key: string): Observable<boolean> {
+    return this.getItem(key).pipe(
+      map(item => !!item) // Transforma o item em um valor booleano indicando se existe ou não
+    );
+  }
+
   // Adiciona um novo item
   addItem(item: any): void {
     if (this.itemsRef) {

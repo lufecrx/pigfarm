@@ -20,8 +20,8 @@ export class WeightControlComponent implements OnInit {
   pigSelected!: IPig;
   whRef!: IWeight;
   pigRef: string = '';
-  weightHistory: any[] = [];
-  filteredWeightHistory: any[] = [];
+  weightHistory: IWeight[] = [];
+  filteredWeightHistory: IWeight[] = [];
 
   formEditWeight!: FormGroup;
   formErrors: any;
@@ -107,8 +107,13 @@ export class WeightControlComponent implements OnInit {
 
     this.restService.getItem(pigId).subscribe((pig: IPig) => {
       this.pigSelected = pig;
-      this.weightHistory = Object.values(pig.weightHistory);
-      this.filteredWeightHistory = this.weightHistory;
+      if (pig.weightHistory) {
+        this.weightHistory = Object.values(pig.weightHistory);
+        this.weightHistory.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        this.filteredWeightHistory = this.weightHistory;
+      } else {
+        this.filteredWeightHistory = [];
+      }
 
       this.loading = false;
     });

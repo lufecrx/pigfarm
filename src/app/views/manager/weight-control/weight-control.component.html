@@ -25,7 +25,7 @@
 
             <tr>
 
-              <td class="text-center">
+              <td *ngIf="pigSelected" class="text-center">
                 <c-avatar size="md" src="{{ avatar }}"></c-avatar>
                 <div class="small text-medium-emphasis text-nowrap">
                   <span>
@@ -34,11 +34,11 @@
                 </div>
               </td>
 
-              <td class="text-center">
+              <td *ngIf="pigSelected" class="text-center">
                 <div>{{ pigSelected.identifier }}</div>
               </td>
 
-              <td class="text-center">
+              <td *ngIf="pigSelected" class="text-center">
                 <div>
                   Birth: {{ pigSelected.date_birth | formatDate }}
                 </div>
@@ -50,7 +50,7 @@
               </td>
 
 
-              <td class="text-center">
+              <td *ngIf="pigSelected" class="text-center">
                 <div class="small text-nowrap">
                   Father ID: {{ pigSelected.father_id }}
                 </div>
@@ -59,7 +59,7 @@
                 </div>
               </td>
 
-              <td class="text-center">
+              <td *ngIf="pigSelected" class="text-center">
                 <div>{{ pigSelected.status }}</div>
                 <div class="small text-medium-emphasis text-nowrap">
                   <span>
@@ -100,37 +100,53 @@
 
           <thead cTableColor="light">
             <tr>
-              <th>Date</th>
-              <th>Weight</th>
+              <th class="text-center">Date</th>
+              <th class="text-center">Weight</th>
               <th class="text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody *ngIf="loading">
             <tr>
-              <td colspan="6" class="text-center">
+              <td></td>
+              <td class="text-center">
                 <div class="m-2">
                   <c-spinner label="Loading..."></c-spinner>
                 </div>
               </td>
+              <td></td>
             </tr>
           </tbody>
 
+          <tbody *ngIf="!loading && filteredWeightHistory.length == 0 ">
+            <tr>
+              <td></td>
+              <td class="text-center">
+                <div class="m-2">
+                  <svg cIcon name="cilSad"></svg>
+                  <span class="text-medium-emphasis">
+                    Nothing to see here
+                  </span>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
 
           <tbody *ngIf="!loading">
 
             <tr *ngFor="let wh of filteredWeightHistory">
 
-              <td>{{ wh.date | formatDate }}</td>
+              <td class="text-center">{{ wh.date | formatDate }}</td>
 
-              <td>{{ wh.weight }} kg</td>
+              <td class="text-center">{{ wh.weight }} kg</td>
 
               <td class="text-center">
-                <c-dropdown variant="btn-group" direction="dropup-center">
+                <c-dropdown variant="btn-group" direction="center">
                   <button cButton cDropdownToggle color="secondary" size="sm">
                     <svg cIcon name="cil-settings"></svg>
                   </button>
-                  <ul cDropdownMenu class="position-fixed">
+                  <ul cDropdownMenu>
                     <li><button cDropdownItem (click)="editWeight(wh)">Edit</button></li>
                     <li><button cDropdownItem (click)="deleteMode(wh)">Delete</button></li>
                   </ul>

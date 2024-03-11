@@ -90,7 +90,6 @@ export class ListPigsComponent implements OnInit {
         this.pigs = response;
         this.totalItems = response.length;
         this.filteredPigs = this.pigs;
-
         this.loading = false;
       });
   }

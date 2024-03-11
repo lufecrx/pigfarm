@@ -1,16 +1,31 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { RestService } from '../services/rest/rest.service';
+import { Observable, map } from 'rxjs';
 
 export const queryParamGuard: CanActivateFn = (route, state) => {
-
   const router = inject(Router);
+  const restService = inject(RestService);
+  const pigRef = route.queryParams['pigRef'];
 
-  if (!route.queryParams.hasOwnProperty('pigRef') || !route.queryParams['pigRef']) {
-    // Se o parâmetro 'id' não estiver presente ou for vazio, redirecione para outra rota
+  if (!pigRef) {
+    // Se o parâmetro 'pigRef' não estiver presente na URL ou for vazio
     router.navigate(['manager/list-pigs']);
-    return false;
+    return new Observable<boolean | UrlTree>(observer => {
+      observer.next(false);
+      observer.complete();
+    });
   } else {
-    // Parâmetro 'id' válido, permitir acesso à rota
-    return true;
+    // Verifica se o item referenciado pelo 'pigRef' existe
+    return restService.itemExists(pigRef).pipe(map(exists => {
+      if (!exists) {
+        // Se o item não existir, redirecione para outra rota
+        router.navigate(['manager/list-pigs']);
+        return false;
+      } else {
+        // Parâmetro 'pigRef' válido
+        return true;
+      }
+    }));
   }
 };
