@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IPig } from '../../../model/pig/pig.interface';
-import { RestService } from 'src/app/services/rest/rest.service';
+import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ValidationFormsService } from 'src/app/services/validation/validation-forms.service';
 
@@ -38,7 +38,7 @@ export class WeightControlComponent implements OnInit {
   avatar: string = './assets/img/avatars/pig.png';
 
   constructor(
-    private restService: RestService,
+    private restService: PigRestService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -105,7 +105,7 @@ export class WeightControlComponent implements OnInit {
   getWeightHistory(pigId: string): void {
     this.loading = true;
 
-    this.restService.getItem(pigId).subscribe((pig: IPig) => {
+    this.restService.getPigByID(pigId).subscribe((pig: IPig) => {
       this.pigSelected = pig;
       if (pig.weightHistory) {
         this.weightHistory = Object.values(pig.weightHistory);

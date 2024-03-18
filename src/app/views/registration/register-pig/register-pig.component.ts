@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RestService } from '../../../services/rest/rest.service';
+import { PigRestService } from '../../../services/rest/pig-rest.service';
 import { ValidationFormsService } from '../../../services/validation/validation-forms.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class RegisterPigComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private router: Router,
     private validationService: ValidationFormsService,
-    private restService: RestService,
+    private restService: PigRestService,
     )
   {
     this.formErrors = this.validationService.errorMessages;
@@ -90,7 +90,7 @@ export class RegisterPigComponent implements OnInit {
     if (this.formPig.valid) {
       try {
         const newPig = this.formPig.value;
-        await this.restService.addItem(newPig);
+        await this.restService.addPig(newPig);
         this.router.navigate(['/manager/list-pigs']);
       } catch (error : any) {
         console.error('Erro ao enviar o formulário:', error);

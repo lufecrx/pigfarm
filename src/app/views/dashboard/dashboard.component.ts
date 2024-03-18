@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; // Importe ActivatedRoute
 
-import { RestService } from 'src/app/services/rest/rest.service';
+import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 import { IPig } from 'src/app/model/pig/pig.interface';
 import {
   BubbleDataPoint,
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private restService: RestService,
+    private restService: PigRestService,
     private formatDate: FormatDatePipe,
     private router: Router,
   ) {}
@@ -53,7 +53,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadPigAndInitChart(pigRef: string): void {
-    this.restService.getItem(pigRef).subscribe((pig: IPig) => {
+    this.restService.getPigByID(pigRef).subscribe((pig: IPig) => {
       this.pigSelected = pig;
       this.initChartForSinglePig(pig.weightHistory);
     });

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IPig } from '../../../model/pig/pig.interface';
-import { RestService } from 'src/app/services/rest/rest.service';
+import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidationFormsService } from 'src/app/services/validation/validation-forms.service';
@@ -30,7 +30,7 @@ export class ListPigsComponent implements OnInit {
   avatar: string = './assets/img/avatars/pig.png';
 
   constructor(
-    private restService: RestService,
+    private restService: PigRestService,
     private router: Router,
     private formBuilder: FormBuilder,
     private validation: ValidationFormsService,
@@ -85,7 +85,7 @@ export class ListPigsComponent implements OnInit {
     this.loading = true;
 
     this.restService
-      .getItemsPaginated(this.currentPage, this.pageSize)
+      .getPigsPaginated(this.currentPage, this.pageSize)
       .subscribe((response) => {
         this.pigs = response;
         this.totalItems = response.length;
@@ -143,7 +143,7 @@ export class ListPigsComponent implements OnInit {
 
   deletePig(): void {
     if (this.pigRef) {
-      this.restService.deleteItem(this.pigRef);
+      this.restService.deletePig(this.pigRef);
       this.getPigs();
       this.toggleDeleteMode();
       this.pigRef = '';

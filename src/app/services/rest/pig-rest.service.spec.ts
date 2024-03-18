@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RestService } from './rest.service';
+import { PigRestService } from './pig-rest.service';
 
-describe('RestService', () => {
-  let service: RestService;
+describe('PigRestService', () => {
+  let service: PigRestService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(RestService);
+    service = TestBed.inject(PigRestService);
   });
 
   it('should be created', () => {

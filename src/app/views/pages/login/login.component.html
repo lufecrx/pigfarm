@@ -12,7 +12,8 @@
                   <span cInputGroupText>
                     <svg cIcon name="cilUser"></svg>
                   </span>
-                  <input cFormControl formControlName="email" autoComplete="email" id="email" placeholder="Email" (input)="clearErrorMessage()"/>
+                  <input cFormControl formControlName="email" autoComplete="email" id="email" placeholder="Email"
+                    (input)="clearErrorMessage()" />
                 </c-input-group>
                 <c-input-group class="mb-0">
                   <span cInputGroupText>
@@ -20,13 +21,11 @@
                   </span>
                   <input cFormControl formControlName="password" autoComplete="current-password" id="password"
                     placeholder="Password" type="password" (input)="clearErrorMessage()" />
-                  </c-input-group>
+                </c-input-group>
 
-                  <div class="error mt-2" *ngIf="getErrorMessage() || errorMessage"  [@fadeInOut]>
-                    <div> Invalid credentials.</div>
-                  </div>
-
-
+                <div class="error mt-2" *ngIf="getErrorMessage() || errorMessage" [@fadeInOut]>
+                  <div> Invalid credentials.</div>
+                </div>
                 <c-row>
                   <c-col class="text-right" xs="10">
                     <button cButton class="px-0" color="link">
