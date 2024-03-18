@@ -32,18 +32,33 @@ export class ActivitiesRestService {
 
   // Get all activities of the authenticated user
   getActivities(): Observable<any[]> {
-    if (this.itemsRef) {
-      return this.itemsRef
-        .snapshotChanges()
-        .pipe(
-          map((changes) =>
-            changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
-          )
-        );
-    } else {
-      // Return an empty observable
-      return new Observable<any[]>();
-    }
+    return this.afAuth.authState.pipe(
+      take(1),
+      switchMap((user) => {
+        if (user) {
+          if (this.itemsRef) {
+            return this.itemsRef.snapshotChanges().pipe(
+              map((changes) =>
+                changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+              )
+            );
+          } else {
+            // If the items reference is not defined, create a new one
+            this.itemsRef = this.db.list(
+              `${this.basePath}/${user.uid}/sanitary-activities`
+            );
+            return this.itemsRef.snapshotChanges().pipe(
+              map((changes) =>
+                changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+              )
+            );
+          }
+        } else {
+          // Return an empty observable if the user is not authenticated
+          return of([]);
+        }
+      })
+    );
   }
 
   // Get activities paginated

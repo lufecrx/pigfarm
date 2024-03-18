@@ -43,6 +43,22 @@
             </tr>
           </tbody>
 
+          <tbody *ngIf="!loading && filteredActivities.length == 0 ">
+            <tr>
+              <td></td>
+              <td></td>
+              <td colspan="2" class="text-center">
+                <div class="m-2">
+                  <svg cIcon name="cilSad"></svg>
+                  <span class="text-medium-emphasis">
+                    Nothing to see here
+                  </span>
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
 
           <tbody *ngIf="!loading">
 
