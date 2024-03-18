@@ -4,6 +4,7 @@ import { ListPigsComponent } from './list-pigs/list-pigs.component';
 import { EditPigComponent } from './edit-pig/edit-pig.component';
 import { WeightControlComponent } from './weight-control/weight-control.component';
 import { queryParamGuard } from 'src/app/guards/query-param.guard';
+import { SanitaryManagementComponent } from './sanitary-management/sanitary-management.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,13 @@ const routes: Routes = [
         },
         canActivate: [queryParamGuard],
       },
+      {
+        path: 'sanitary-management',
+        component: SanitaryManagementComponent,
+        data: {
+          title: 'Sanitary Management',
+        },
+      }
     ]
   }
 ];
