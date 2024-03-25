@@ -109,6 +109,8 @@ export class SanitaryManagementComponent implements OnInit {
       .getActivities()
       .subscribe((data: SanitaryActivity[]) => {
         this.sanitaryActivities = data;
+        // Order activities by date in descending order
+        this.sanitaryActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.filteredActivities = this.sanitaryActivities;
         this.loading = false;
       });

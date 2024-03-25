@@ -109,7 +109,8 @@ export class WeightControlComponent implements OnInit {
       this.pigSelected = pig;
       if (pig.weightHistory) {
         this.weightHistory = Object.values(pig.weightHistory);
-        this.weightHistory.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        // Order weight history by date in descending order
+        this.weightHistory.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.filteredWeightHistory = this.weightHistory;
       } else {
         this.filteredWeightHistory = [];
