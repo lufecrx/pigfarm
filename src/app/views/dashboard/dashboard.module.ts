@@ -11,6 +11,7 @@ import {
   GridModule,
   NavModule,
   ProgressModule,
+  SpinnerModule,
   TableModule,
   TabsModule
 } from '@coreui/angular';
@@ -40,6 +41,7 @@ import { FormatDatePipe } from 'src/app/services/pipes/format-date.pipe';
     ChartjsModule,
     AvatarModule,
     TableModule,
+    SpinnerModule,
     UtilsPipesModule,
   ],
   declarations: [DashboardComponent],

@@ -14,11 +14,6 @@ import {
   FormatDatePipe,
 } from 'src/app/services/pipes/format-date.pipe';
 
-interface IPigWeightEntry {
-  date: string;
-  weight: string;
-}
-
 @Component({
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
@@ -40,6 +35,8 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   pigSelected!: IPig;
+  existsWeightHistory: boolean = false;
+  loading: boolean = false;
   pigRef: string = '';
   avatar: string = './assets/img/avatars/pig.png';
 
@@ -53,9 +50,17 @@ export class DashboardComponent implements OnInit {
   }
 
   loadPigAndInitChart(pigRef: string): void {
+    this.loading = true;
+
     this.restService.getPigByID(pigRef).subscribe((pig: IPig) => {
       this.pigSelected = pig;
-      this.initChartForSinglePig(pig.weightHistory);
+      if (pig.weightHistory) {
+        this.initChartForSinglePig(pig.weightHistory);
+        this.existsWeightHistory = true;
+      } else {
+        this.existsWeightHistory = false;
+        this.loading = false;
+      }
     });
   }
 
@@ -100,6 +105,8 @@ export class DashboardComponent implements OnInit {
         },
       ],
     };
+
+    this.loading = false;
   }
 
   weightControl(): void {

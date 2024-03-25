@@ -82,12 +82,23 @@
       <c-card-header>
         Weight History
       </c-card-header>
-      <c-card-body>
 
+      <c-card-body *ngIf="!loading && existsWeightHistory">
         <c-chart [data]="data" type="line">
         </c-chart>
-
       </c-card-body>
+
+      <c-card-body *ngIf="loading" class="text-center">
+        <c-spinner label="Loading..."></c-spinner>
+      </c-card-body>
+
+      <c-card-body *ngIf="!existsWeightHistory" class="text-center">
+        <svg cIcon name="cilSad"></svg>
+        <span class="text-medium-emphasis">
+          Nothing to see here
+        </span>
+      </c-card-body>
+
     </c-card>
   </c-col>
 </c-row>
