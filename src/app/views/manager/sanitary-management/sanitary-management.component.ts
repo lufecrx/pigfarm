@@ -11,6 +11,12 @@ import { ValidationFormsService } from 'src/app/services/validation/validation-f
 import { IPig } from 'src/app/model/pig/pig.interface';
 import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 
+export interface ISanitaryActivity {
+  activity: string;
+  date: string;
+  description: string;
+}
+
 @Component({
   selector: 'app-sanitary-management',
   templateUrl: './sanitary-management.component.html',
@@ -24,6 +30,9 @@ export class SanitaryManagementComponent implements OnInit {
   formEditActivity!: FormGroup;
   formAddActivity!: FormGroup;
   formErrors: any;
+
+  activityRef!: ISanitaryActivity;
+  activityHistory: ISanitaryActivity[] = [];
 
   loading: boolean = false;
 
@@ -151,6 +160,14 @@ export class SanitaryManagementComponent implements OnInit {
     this.addActivitySubmit = true;
     if (this.formAddActivity.valid) {
       this.activitiesRest.addActivity(this.formAddActivity.value);
+
+      // Add activity for all pigs from session
+      const pigs = this.formAddActivity.controls['pigs'].value;
+      pigs.forEach((pig: IPig) => {
+        const pigRef = pig.key || ''; // Ensure pigRef is always a string
+        this.pigsRest.addActivityToPig(pigRef, this.formAddActivity.value);
+      });
+
       this.getActivities();
       this.toggleAddActivity();
       this.formAddActivity.reset();
@@ -219,6 +236,14 @@ export class SanitaryManagementComponent implements OnInit {
 
       if (key !== undefined) {
         this.activitiesRest.updateActivity(key, value);
+
+        // Update activity for all pigs from session
+        const pigs = this.formEditActivity.controls['pigs'].value;
+        pigs.forEach((pig: IPig) => {
+          const pigRef = pig.key || ''; // Ensure pigRef is always a string
+          this.pigsRest.updateActivityHistory(pigRef, key);
+        });
+
         this.getActivities();
         this.toggleEditActivity();
       }
@@ -232,6 +257,7 @@ export class SanitaryManagementComponent implements OnInit {
   deleteActivityMode(activity: SanitaryActivity) {
     this.toggleDeleteActivity();
     this.deleteActivityData = activity;
+    this.activityRef = activity;
   }
 
   handleDeleteMode(event: any) {
@@ -247,11 +273,40 @@ export class SanitaryManagementComponent implements OnInit {
   }
 
   confirmDelete() {
-    const key = this.deleteActivityData.key;
-    if (key !== undefined) {
-      this.activitiesRest.deleteActivity(key);
-      this.getActivities();
-      this.toggleDeleteActivity();
+    const activityKey = this.deleteActivityData.key;
+    if (activityKey !== undefined) {
+      this.activitiesRest.deleteActivity(activityKey);
+
+      // Delete activity for all pigs from session
+      const pigs = this.deleteActivityData.pigs;
+      pigs.forEach((pig: IPig) => {
+        const pigRef = pig.key || ''; // Ensure pigRef is always a string
+
+        if (pigRef && this.activityRef) {
+          // Find the index of the activity to delete
+          const index = pig.activityHistory.findIndex(
+            (activity) => activity === this.activityRef
+          );
+
+          if (index !== -1) {
+            // Remove the activity from the activityHistory array
+            pig.activityHistory.splice(index, 1);
+          }
+
+          // Update the activity history of the pig
+          this.pigsRest
+            .updateActivityHistory(pigRef, pig.activityHistory)
+            .then(() => {
+              this.toggleDeleteActivity();
+              this.getActivities();
+            })
+            .catch((error) => {
+              console.error('Error updating activity history:', error);
+            });          
+        } else {
+          console.error('Activities or pigs not found.');
+        } 
+      });
     }
   }
 }

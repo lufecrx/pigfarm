@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IPig } from '../../../model/pig/pig.interface';
 import { PigRestService } from 'src/app/services/rest/pig-rest.service';

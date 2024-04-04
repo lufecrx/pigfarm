@@ -124,8 +124,6 @@ export class PigRestService {
       );
     }
 
-
-
     /* Weight History Operations */
 
     // Add a new weight to a pig
@@ -193,5 +191,92 @@ export class PigRestService {
         })
       ));
     }
+
+    /* Activity History Operations */
+
+    // Add a new activity to a pig
+    addActivityToPig(pigRef: string, value: any): void {
+      const { activity, date, description } = value;
+
+      if (this.itemsRef) {
+        this.afAuth.authState.subscribe((user) => {
+          if (user) {
+            const activityPath = `${this.basePath}/${user.uid}/pigs/${pigRef}/activityHistory`;
+            const newActivityRef = this.db.list(activityPath);
+
+            const newActivity = {
+              activity: activity,
+              date: date,
+              description: description,
+            };
+
+            newActivityRef
+              .push(newActivity)
+              .then(() => {
+                console.log('Atividade adicionada com sucesso ao documento do porco.');
+              })
+              .catch((error) => {
+                console.error(
+                  'Erro ao adicionar atividade ao documento do porco:',
+                  error
+                );
+              });
+          } else {
+            console.error('Usuário não autenticado.');
+          }
+        });
+      } else {
+        console.error('Referência de itens não está definida.');
+      }
+    }
+
+    // Get the activity history of a pig
+    getActivityHistory(pigRef: string): Observable<any> {
+      if (this.itemsRef) {
+        return this.afAuth.authState.pipe(
+          take(1),
+          switchMap(user => {
+            if (user) {
+              return this.db.list<any>(`${this.basePath}/${user.uid}/pigs/${pigRef}/activityHistory`).valueChanges();
+            } else {
+              return of(null);
+            }
+          })
+        );
+      }
+      return new Observable<any[]>();
+    }
+
+    // Update the activity history of a pig
+    updateActivityHistory(pigRef: string, updatedActivityHistory: any): Promise<void> {
+      return firstValueFrom(this.afAuth.authState.pipe(
+        take(1),
+        switchMap(user => {
+          if (user) {
+            return this.db.object(`${this.basePath}/${user.uid}/pigs/${pigRef}/activityHistory`).set(updatedActivityHistory);
+          } else {
+            return Promise.resolve(); // Retorne uma promessa vazia se o usuário não estiver autenticado
+          }
+        })
+      ));
+    }
+
+    // // Delete an activity from a pig
+    // deleteActivityHistory(pigRef: string, key: string): void {
+    //   if (this.itemsRef) {
+    //     this.afAuth.authState.subscribe((user) => {
+    //       if (user) {
+    //         const activityPath = `${this.basePath}/${user.uid}/pigs/${pigRef}/activityHistory/${key}`;
+    //         console.log('activityPath:', activityPath);
+    //         console.log('key:', key);
+    //         this.db.object(activityPath).remove();
+    //       } else {
+    //         console.error('Usuário não autenticado.');
+    //       }
+    //     });
+    //   } else {
+    //     console.error('Referência de itens não está definida.');
+    //   }
+    // }
 
 }
