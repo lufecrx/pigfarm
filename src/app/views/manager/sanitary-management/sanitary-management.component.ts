@@ -11,12 +11,6 @@ import { ValidationFormsService } from 'src/app/services/validation/validation-f
 import { IPig } from 'src/app/model/pig/pig.interface';
 import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 
-export interface ISanitaryActivity {
-  activity: string;
-  date: string;
-  description: string;
-}
-
 @Component({
   selector: 'app-sanitary-management',
   templateUrl: './sanitary-management.component.html',
@@ -31,8 +25,8 @@ export class SanitaryManagementComponent implements OnInit {
   formAddActivity!: FormGroup;
   formErrors: any;
 
-  activityRef!: ISanitaryActivity;
-  activityHistory: ISanitaryActivity[] = [];
+  oldPigs: IPig[] = [];
+  newPigs: IPig[] = [];
 
   loading: boolean = false;
 
@@ -79,7 +73,9 @@ export class SanitaryManagementComponent implements OnInit {
 
   onAddActivityChange(value: string) {
     if (value === 'Other') {
-      this.formAddActivity.controls['otherActivity'].setValidators([Validators.required]);
+      this.formAddActivity.controls['otherActivity'].setValidators([
+        Validators.required,
+      ]);
     } else {
       this.formAddActivity.controls['otherActivity'].clearValidators();
     }
@@ -88,7 +84,9 @@ export class SanitaryManagementComponent implements OnInit {
 
   onEditActivityChange(value: string) {
     if (value === 'Other') {
-      this.formEditActivity.controls['otherActivity'].setValidators([Validators.required]);
+      this.formEditActivity.controls['otherActivity'].setValidators([
+        Validators.required,
+      ]);
     } else {
       this.formEditActivity.controls['otherActivity'].clearValidators();
     }
@@ -107,7 +105,8 @@ export class SanitaryManagementComponent implements OnInit {
         (this.dateFilter === '' || activity.date === this.dateFilter) &&
         (this.activityFilter === '' ||
           activity.activity === this.activityFilter) &&
-        (this.pigFilter === '' || activity.pigs.some(pig => pig.identifier === this.pigFilter))
+        (this.pigFilter === '' ||
+          activity.pigs.some((pig) => pig.identifier === this.pigFilter))
     );
   }
 
@@ -119,7 +118,9 @@ export class SanitaryManagementComponent implements OnInit {
       .subscribe((data: SanitaryActivity[]) => {
         this.sanitaryActivities = data;
         // Order activities by date in descending order
-        this.sanitaryActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.sanitaryActivities.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
         this.filteredActivities = this.sanitaryActivities;
         this.loading = false;
       });
@@ -154,19 +155,33 @@ export class SanitaryManagementComponent implements OnInit {
 
   confirmAdd() {
     if (this.formAddActivity.controls['activity'].value === 'Other') {
-      this.formAddActivity.controls['activity'].setValue(this.formAddActivity.controls['otherActivity'].value);
+      this.formAddActivity.controls['activity'].setValue(
+        this.formAddActivity.controls['otherActivity'].value
+      );
     }
 
     this.addActivitySubmit = true;
     if (this.formAddActivity.valid) {
-      this.activitiesRest.addActivity(this.formAddActivity.value);
+      const newActivity = this.formAddActivity.value;
 
-      // Add activity for all pigs from session
+      // Add activity for all pigs from session using the key of the new activity
       const pigs = this.formAddActivity.controls['pigs'].value;
-      pigs.forEach((pig: IPig) => {
-        const pigRef = pig.key || ''; // Ensure pigRef is always a string
-        this.pigsRest.addActivityToPig(pigRef, this.formAddActivity.value);
-      });
+      this.activitiesRest
+        .addActivity(newActivity)
+        .then((activityKey) => {
+          if (pigs) {
+            // Check if pigs is not null before calling forEach
+            pigs.forEach((pig: IPig) => {
+              const pigRef = pig.key || ''; // Ensure pigRef is always a string
+              this.pigsRest.addActivityToPig(pigRef, activityKey);
+            });
+          } else {
+            console.error('Pigs is null.');
+          }
+        })
+        .catch((error) => {
+          console.error('There was an error adding the activity:', error);
+        });
 
       this.getActivities();
       this.toggleAddActivity();
@@ -223,11 +238,13 @@ export class SanitaryManagementComponent implements OnInit {
     this.toggleEditActivity();
   }
 
-  confirmEdit() {
+  async confirmEdit() {
     this.editActivitySubmit = true;
 
     if (this.formEditActivity.controls['activity'].value === 'Other') {
-      this.formEditActivity.controls['activity'].setValue(this.formEditActivity.controls['otherActivity'].value);
+      this.formEditActivity.controls['activity'].setValue(
+        this.formEditActivity.controls['otherActivity'].value
+      );
     }
 
     if (this.formEditActivity.valid) {
@@ -235,17 +252,50 @@ export class SanitaryManagementComponent implements OnInit {
       const value = this.formEditActivity.value;
 
       if (key !== undefined) {
-        this.activitiesRest.updateActivity(key, value);
+        try {
+          // Get the old pigs of the activity
+          const oldActivity = await this.activitiesRest.getActivityByKey(key);
+          this.oldPigs = oldActivity.pigs;
 
-        // Update activity for all pigs from session
-        const pigs = this.formEditActivity.controls['pigs'].value;
-        pigs.forEach((pig: IPig) => {
-          const pigRef = pig.key || ''; // Ensure pigRef is always a string
-          this.pigsRest.updateActivityHistory(pigRef, key);
-        });
+          await this.activitiesRest.updateActivity(key, value);
 
-        this.getActivities();
-        this.toggleEditActivity();
+          // Add activity for all pigs from session using the key of the new activity
+          const pigs = this.formEditActivity.controls['pigs'].value;
+          if (pigs) {
+            // Check if pigs is not null before calling forEach
+            pigs.forEach((pig: IPig) => {
+              const pigRef = pig.key || ''; // Ensure pigRef is always a string
+              this.pigsRest.addActivityToPig(pigRef, key);
+            });
+          } else {
+            console.error('Pigs is null.');
+          }
+
+          // Get the new pigs of the activity
+          const newActivity = await this.activitiesRest.getActivityByKey(key);
+          this.newPigs = newActivity.pigs;
+
+          // Create sets for the old and new pig keys
+          const oldPigKeys = new Set(this.oldPigs.map((pig) => pig.key));
+          const newPigKeys = new Set(this.newPigs.map((pig) => pig.key));
+
+          // Find the keys of the pigs that were removed
+          const removedPigKeys = [...oldPigKeys].filter(
+            (pigKey) => !newPigKeys.has(pigKey)
+          );
+
+          // For each removed pig, remove the activity from the pig
+          removedPigKeys.forEach((pigKey) => {
+            if (pigKey !== undefined) {
+              this.pigsRest.removeActivityFromPig(pigKey, key);
+            }
+          });
+
+          this.getActivities();
+          this.toggleEditActivity();
+        } catch (error) {
+          console.error('There was an error:', error);
+        }
       }
     }
   }
@@ -257,7 +307,6 @@ export class SanitaryManagementComponent implements OnInit {
   deleteActivityMode(activity: SanitaryActivity) {
     this.toggleDeleteActivity();
     this.deleteActivityData = activity;
-    this.activityRef = activity;
   }
 
   handleDeleteMode(event: any) {
@@ -273,40 +322,16 @@ export class SanitaryManagementComponent implements OnInit {
   }
 
   confirmDelete() {
-    const activityKey = this.deleteActivityData.key;
-    if (activityKey !== undefined) {
-      this.activitiesRest.deleteActivity(activityKey);
-
-      // Delete activity for all pigs from session
-      const pigs = this.deleteActivityData.pigs;
-      pigs.forEach((pig: IPig) => {
+    const key = this.deleteActivityData.key;
+    if (key !== undefined) {
+      this.activitiesRest.deleteActivity(key);
+      // Remove the activity from all pigs from session
+      this.deleteActivityData.pigs.forEach((pig) => {
         const pigRef = pig.key || ''; // Ensure pigRef is always a string
-
-        if (pigRef && this.activityRef) {
-          // Find the index of the activity to delete
-          const index = pig.activityHistory.findIndex(
-            (activity) => activity === this.activityRef
-          );
-
-          if (index !== -1) {
-            // Remove the activity from the activityHistory array
-            pig.activityHistory.splice(index, 1);
-          }
-
-          // Update the activity history of the pig
-          this.pigsRest
-            .updateActivityHistory(pigRef, pig.activityHistory)
-            .then(() => {
-              this.toggleDeleteActivity();
-              this.getActivities();
-            })
-            .catch((error) => {
-              console.error('Error updating activity history:', error);
-            });          
-        } else {
-          console.error('Activities or pigs not found.');
-        } 
+        this.pigsRest.removeActivityFromPig(pigRef, key);
       });
+      this.getActivities();
+      this.toggleDeleteActivity();
     }
   }
 }
