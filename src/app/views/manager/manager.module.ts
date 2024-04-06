@@ -26,6 +26,7 @@ import { EditPigComponent } from './edit-pig/edit-pig.component';
 import { WeightControlComponent } from './weight-control/weight-control.component';
 import { SanitaryManagementComponent } from './sanitary-management/sanitary-management.component';
 import { PigHistoryComponent } from './pig-history/pig-history.component';
+import { PigTableModule } from 'src/app/shared/pig-table/pig-table.module';
 
 import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -61,6 +62,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NgSelectModule,
     SpinnerModule,
     UtilsPipesModule,
+    PigTableModule,
   ]
 })
 export class ManagerModule {

@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, tap } from 'rxjs';
-import { SanitaryActivity } from 'src/app/model/activity/sanitary-activity.interface';
+import { SanitaryActivity, IActivity } from 'src/app/model/activity/sanitary-activity.interface';
 import { IWeight } from 'src/app/model/activity/weight.interface';
 import { IPig } from 'src/app/model/pig/pig.interface';
 import { ActivitiesRestService } from 'src/app/services/rest/activities-rest.service';
 import { PigRestService } from 'src/app/services/rest/pig-rest.service';
 import { from } from 'rxjs';
-
-export interface IActivity {
-  date: string;
-  activity: string;
-  weight?: string;
-  description: string;
-}
 
 @Component({
   selector: 'app-pig-history',
@@ -26,6 +19,7 @@ export class PigHistoryComponent implements OnInit {
   weightHistory: IWeight[] = [];
   activities: IActivity[] = [];
   pigSelected!: IPig;
+  pigRef: string = '';
 
   filteredActivities: IActivity[] = [];
 
@@ -36,7 +30,8 @@ export class PigHistoryComponent implements OnInit {
   constructor(
     private pigsRestService: PigRestService,
     private activitiesRestService: ActivitiesRestService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +39,10 @@ export class PigHistoryComponent implements OnInit {
 
     this.loading = true;
 
-    this.loadData(pigRef);
+    if (pigRef) {
+      this.pigRef = pigRef;
+      this.loadData(pigRef);
+    }
   }
 
   loadData(pigRef: string) {
@@ -137,5 +135,11 @@ export class PigHistoryComponent implements OnInit {
         (this.weightFilter === '' ||
           (activity.weight ?? '').includes(this.weightFilter))
     );
+  }
+
+  showChart(): void {
+    this.router.navigate(['/dashboard'], {
+      queryParams: { pigRef: this.pigRef },
+    });
   }
 }
