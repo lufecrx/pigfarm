@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin, of, tap } from 'rxjs';
 import { SanitaryActivity } from 'src/app/model/activity/sanitary-activity.interface';
 import { IWeight } from 'src/app/model/activity/weight.interface';
 import { IPig } from 'src/app/model/pig/pig.interface';
 import { ActivitiesRestService } from 'src/app/services/rest/activities-rest.service';
 import { PigRestService } from 'src/app/services/rest/pig-rest.service';
+import { from } from 'rxjs';
 
 export interface IActivity {
   date: string;
@@ -18,6 +20,7 @@ export interface IActivity {
   templateUrl: './pig-history.component.html',
   styleUrl: './pig-history.component.scss',
 })
+
 export class PigHistoryComponent implements OnInit {
   sanitaryActivities: SanitaryActivity[] = [];
   weightHistory: IWeight[] = [];
@@ -37,7 +40,6 @@ export class PigHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get all activities for the pig and join them in a single sorted array
     const pigRef = this.activatedRoute.snapshot.queryParams['pigRef'];
 
     this.loading = true;
@@ -48,30 +50,37 @@ export class PigHistoryComponent implements OnInit {
   loadData(pigRef: string) {
     this.pigsRestService.getPigByID(pigRef).subscribe((pig: IPig) => {
       this.pigSelected = pig;
-      this.getSanitaryActivities();
-      this.getWeightHistory();
 
-      // Sort activities by date in descending order
-      this.filteredActivities = this.activities.sort((a, b) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      // Convert getSanitaryActivities and getWeightHistory to return Observables
+      const sanitaryActivities$ = this.getSanitaryActivities();
+      const weightHistory$ = this.getWeightHistory();
+
+      // Use forkJoin to wait for all observables to complete
+      forkJoin({
+        sanitaryActivities: sanitaryActivities$,
+        weightHistory: weightHistory$,
+      }).subscribe(() => {
+        // Sort activities by date in descending order
+        this.activities.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        this.filteredActivities = this.activities;
+
+        this.loading = false;
       });
-
-      this.loading = false;
     });
   }
 
   getSanitaryActivities() {
-    // Get all sanitary activities references for the pig
     if (this.pigSelected.activityHistory) {
       const activitiesKeys: { ref: string }[] = Object.values(
         this.pigSelected.activityHistory
       );
 
-      // Get the sanitary activities for the pig using the references
-      activitiesKeys.forEach((activity) => {
-        this.activitiesRestService
-          .getActivityByKey(activity.ref)
-          .then((sanitaryActivity: SanitaryActivity) => {
+      // Convert each promise to an observable and return an array of observables
+      const observables = activitiesKeys.map((activity) =>
+        from(this.activitiesRestService.getActivityByKey(activity.ref)).pipe(
+          tap((sanitaryActivity: SanitaryActivity) => {
             this.sanitaryActivities.push(sanitaryActivity);
 
             // Add the sanitary activity to the activities array
@@ -81,10 +90,15 @@ export class PigHistoryComponent implements OnInit {
               description: sanitaryActivity.description,
               weight: 'N/A',
             });
-          });
-      });
+          })
+        )
+      );
+
+      // Use forkJoin to wait for all observables to complete and return the result as an observable
+      return forkJoin(observables);
     } else {
-      this.sanitaryActivities = []; // If there are no activities, set the array to empty
+      this.sanitaryActivities = [];
+      return of([]); // Return an observable that immediately completes
     }
   }
 
@@ -104,6 +118,8 @@ export class PigHistoryComponent implements OnInit {
         description: '',
       });
     });
+
+    return of(this.weightHistory); // Return an observable that immediately completes
   }
 
   // Variables to hold filter values
