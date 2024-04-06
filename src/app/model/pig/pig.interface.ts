@@ -1,3 +1,4 @@
+import { IWeight } from "../activity/weight.interface";
 import { GenderPig, StatusPig } from "./pig.enum";
 
 export interface IPig {
@@ -14,7 +15,7 @@ export interface IPig {
 
   activityHistory: { ref: string }[];
 
-  weightHistory: { date: string, weight: string }[];
+  weightHistory: IWeight[];
 
   key?: string;
   editing?: boolean;

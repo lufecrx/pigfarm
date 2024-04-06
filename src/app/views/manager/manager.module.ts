@@ -25,6 +25,7 @@ import { ListPigsComponent } from './list-pigs/list-pigs.component';
 import { EditPigComponent } from './edit-pig/edit-pig.component';
 import { WeightControlComponent } from './weight-control/weight-control.component';
 import { SanitaryManagementComponent } from './sanitary-management/sanitary-management.component';
+import { PigHistoryComponent } from './pig-history/pig-history.component';
 
 import { UtilsPipesModule } from 'src/app/shared/utils-pipes/utils-pipes.module';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -35,6 +36,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     EditPigComponent,
     WeightControlComponent,
     SanitaryManagementComponent,
+    PigHistoryComponent,
   ],
   imports: [
     ManagerRoutingModule,

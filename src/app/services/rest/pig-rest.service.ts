@@ -175,27 +175,6 @@ export class PigRestService {
     }
   }
 
-  // Get the weight history of a pig
-  getWeightHistory(pigRef: string): Observable<any> {
-    if (this.itemsRef) {
-      return this.afAuth.authState.pipe(
-        take(1),
-        switchMap((user) => {
-          if (user) {
-            return this.db
-              .list<any>(
-                `${this.basePath}/${user.uid}/pigs/${pigRef}/weightHistory`
-              )
-              .valueChanges();
-          } else {
-            return of(null);
-          }
-        })
-      );
-    }
-    return new Observable<any[]>();
-  }
-
   // Update the weight history of a pig
   updateWeightHistory(
     pigRef: string,
@@ -279,26 +258,5 @@ export class PigRestService {
     } else {
       console.error('Items reference is not defined.');
     }
-  }
-
-  // Get the activity history of a pig
-  getActivityHistory(pigRef: string): Observable<any> {
-    if (this.itemsRef) {
-      return this.afAuth.authState.pipe(
-        take(1),
-        switchMap((user) => {
-          if (user) {
-            return this.db
-              .list<any>(
-                `${this.basePath}/${user.uid}/pigs/${pigRef}/activityHistory`
-              )
-              .valueChanges();
-          } else {
-            return of(null);
-          }
-        })
-      );
-    }
-    return new Observable<any[]>();
   }
 }
